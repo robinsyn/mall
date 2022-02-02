@@ -56,4 +56,9 @@ public class UserServiceTest {
         user.setGender(0);
         userService.updateInfo(7, "管理员", user);
     }
+
+    @Test
+    public void updateAvatar() {
+        userService.updateAvatar(7, "oooo", "管理员2");
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.mall.service;
 
 import com.example.mall.entity.User;
+import org.apache.ibatis.annotations.Param;
 
 public interface UserService {
     /**
@@ -40,5 +41,17 @@ public interface UserService {
      * 修改用户信息
      * @param user
      */
-    public void updateInfo(Integer uid, String username, User user);
+    public void updateInfo(Integer uid,
+                           String username,
+                           User user);
+
+    /**
+     * 更新用户头像
+     * @param uid
+     * @param avatar
+     * @param username
+     */
+    public void updateAvatar(Integer uid,
+                             String avatar,
+                             String username);
 }

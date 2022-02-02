@@ -1,5 +1,6 @@
 package com.example.mall.controller;
 
+import com.example.mall.controller.exception.*;
 import com.example.mall.entity.User;
 import com.example.mall.service.UserService;
 import com.example.mall.service.exception.*;
@@ -9,8 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 //@Controller
 @RestController // 等于@Controller+@ResponseBody
@@ -129,6 +137,74 @@ public class UserController extends BaseController{
         } catch (UpdateException e) {
             result.setState(4000);
             result.setMessage("更新时产生未知的错误异常");
+        }
+        return result;
+    }
+
+
+
+    /**
+     * MultipartFile接口是springmvc提供的一个接口，这个接口为我们包装了获取文件类型的数据(任何类型的file)
+     * springboot整合了springmvc，在处理请求的方法参数列表上声明一个参数类型为MultipartFile的参数，然后springboot自动将
+     * 传递给服务器的文件数据赋值给这个参数
+     * @param session
+     * @param file
+     * @return
+     */
+    @RequestMapping("/change_avatar")
+    public JsonResult<String> changeAvatar(HttpSession session,
+                                           MultipartFile file) {
+        //判断文件是否为null
+        if (file.isEmpty()) {
+            throw new FileEmptyException("文件为空");
+        }
+        //限制文件上传类型
+        List<String> AVATAR_TYPE = new ArrayList<>();
+        AVATAR_TYPE.add("image/jpeg");
+        AVATAR_TYPE.add("image/png");
+        AVATAR_TYPE.add("image/bmp");
+        //判断文件的后缀
+        String contentType = file.getContentType();
+        if (!AVATAR_TYPE.contains(contentType)) {
+            throw new FileTypeException("文件类型不支持");
+        }
+        //上传的文件 .../upload/文件.png
+        String parent = session.getServletContext().getRealPath("upload");
+        //file对象指向这个路径
+        File dir = new File(parent);
+        //检测目录是否存在，不存在创建一个
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        //获取文件名称，UUID生成一个新的字符串作为文件名
+        String originalFilename = file.getOriginalFilename();
+        //取出后缀
+        int index = originalFilename.lastIndexOf(".");
+        String suffix = originalFilename.substring(index);
+        String fileName = UUID.randomUUID().toString().toUpperCase() + suffix;
+        File dest = new File(dir, fileName);
+        try {
+            file.transferTo(dest); //将file文件写入dest中
+        } catch (FileStateException e) {
+            throw new FileStateException("文件状态异常");
+        } catch (IOException e) {
+            throw new FileUploadIOException("文件读写异常");
+        }
+        Integer uid = getUidFromSession(session);
+        String username = getUsernameFromSession(session);
+        String avatar = "/upload/" + fileName;
+        JsonResult<String> result = new JsonResult<>();
+        try {
+            userService.updateAvatar(uid, avatar, username);
+            result.setState(200);
+            result.setData(avatar);
+            result.setMessage("上传成功");
+        } catch (UserNotFoundException e) {
+            result.setState(4000);
+            result.setMessage("用户不存在");
+        } catch (UpdateException e) {
+            result.setState(4000);
+            result.setMessage("更新头像时产生未知的错误异常");
         }
         return result;
     }

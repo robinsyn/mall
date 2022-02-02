@@ -19,4 +19,11 @@ public class JsonResult<E> implements Serializable {
     private String message;
     //数据
     private E data;
+
+    /** 出现异常时调用 */
+//    public JsonResult(Throwable e) {
+//        super();
+//        // 获取异常对象中的异常信息
+//        this.message = e.getMessage();
+//    }
 }

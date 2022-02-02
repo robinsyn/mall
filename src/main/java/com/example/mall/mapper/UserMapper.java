@@ -1,6 +1,7 @@
 package com.example.mall.mapper;
 
 import com.example.mall.entity.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 
@@ -45,4 +46,18 @@ public interface UserMapper {
      * @return 返回影响的行数
      */
     public Integer updateInfoByUid(User user);
+
+    /**
+     * @Param("uid"):解决的问题：当sql的占位符与映射的接口方法参数名不一致时，将某个参数强行注入某个占位符变量
+     * 上传头像
+     * @param uid
+     * @param avatar
+     * @param modifiedUser
+     * @param modifiedTime
+     * @return
+     */
+    public Integer updateAvatarByUid(@Param("uid") Integer uid,
+                                    String avatar,
+                                    String modifiedUser,
+                                    Date modifiedTime);
 }

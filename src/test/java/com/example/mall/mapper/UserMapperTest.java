@@ -2,6 +2,7 @@ package com.example.mall.mapper;
 
 import com.example.mall.entity.User;
 import com.example.mall.mapper.UserMapper;
+import org.apache.ibatis.annotations.Param;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,6 +51,11 @@ public class UserMapperTest {
         user.setEmail("888@qq.com");
         user.setGender(1);
         userMapper.updateInfoByUid(user);
+    }
+
+    @Test
+    public void updateAvatarByUid() {
+        userMapper.updateAvatarByUid(7, "upup", "管理员", new Date());
     }
 
 

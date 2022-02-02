@@ -114,7 +114,19 @@ public class UserServiceImpl implements UserService{
         user.setModifiedTime(new Date());
         Integer row = userMapper.updateInfoByUid(user);
         if (row != 1) {
-            throw new UpdateException("更新时产生未知的错误异常");
+            throw new UpdateException("更新资料时产生未知的错误异常");
+        }
+    }
+
+    @Override
+    public void updateAvatar(Integer uid, String avatar, String username) {
+        User result = userMapper.findByUid(uid);
+        if (result == null || result.getIsDelete() == 1) {
+            throw new UserNotFoundException("用户数据不存在");
+        }
+        Integer row = userMapper.updateAvatarByUid(uid, avatar, username, new Date());
+        if (row != 1) {
+            throw new UpdateException("更新头像时产生未知的错误异常");
         }
     }
 

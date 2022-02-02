@@ -154,8 +154,10 @@
 					dataType:"JSON",
 					success:function (json) {
 						if(json.state == 200) {
-							alert("登陆成功")
+							// alert("登陆成功")
 							location.href = "index.html"
+							//将服务器返回的头像设置到cookie中
+							$.cookie("avatar", json.data.avatar, {expires: 7});
 						} else {
 							alert("登陆失败")
 						}

@@ -19,8 +19,10 @@
 		<link rel="stylesheet" type="text/css" href="../css/layout.css" />
 		<link rel="stylesheet" type="text/css" href="../css/top.css" />
 		<link rel="stylesheet" type="text/css" href="../css/footer.css" />
+		<!--
 		<script type="text/javascript" src="../js/distpicker.data.js"></script>
 		<script type="text/javascript" src="../js/distpicker.js"></script>
+		-->
 	</head>
 
 	<body>
@@ -287,6 +289,129 @@
 			</div>
 		</footer>
 		<!--页脚结束-->
-	</body>
 
+		<script type="text/javascript">
+			let defaultOption = '<option value="0">----- 请选择 -----</option>';
+
+			$(document).ready(function() {
+				showProvinceList();
+				$("#city-list").append(defaultOption);
+				$("#area-list").append(defaultOption);
+			});
+
+			$("#province-list").change(function() {
+				showCityList();
+			});
+
+			$("#city-list").change(function() {
+				showAreaList();
+			});
+
+			function showProvinceList() {
+				$("#province-list").append(defaultOption);
+				$.ajax({
+					url: "/districts",
+					type: "GET",
+					data: "parent=86",
+					dataType: "JSON",
+					success:function (json) {
+					    if (json.state == 200) {
+					        let list = json.data;
+                            console.log("count=" + list.length);
+                            for (let i = 0; i < list.length; i++) {
+                                console.log(list[i].name);
+                                let option = '<option value="' + list[i].code + '">' + list[i].name + '</option>';
+                                $("#province-list").append(option);
+                            }
+                        } else {
+							alert("获取省市数据失败")
+						}
+					},
+					error:function (xhr) {
+						alert("获取省市数据时产生未知错误！" + xhr.status)
+					}
+				});
+			}
+
+			function showCityList() {
+				let parent = $("#province-list").val();
+				$("#city-list").empty();
+				$("#area-list").empty();
+
+				$("#city-list").append(defaultOption);
+				$("#area-list").append(defaultOption);
+
+				if (parent == 0) {
+					return;
+				}
+
+				$.ajax({
+					url: "/districts",
+					type: "GET",
+					data: "parent=" + parent,
+					dataType: "JSON",
+					success: function(json) {
+						if (json.state == 200) {
+							let list = json.data;
+							console.log("count=" + list.length);
+							for (let i = 0; i < list.length; i++) {
+								console.log(list[i].name);
+								let option = '<option value="' + list[i].code + '">' + list[i].name + '</option>';
+								$("#city-list").append(option);
+							}
+						}
+					}
+				});
+			}
+
+			function showAreaList() {
+				let parent = $("#city-list").val();
+				$("#area-list").empty();
+				$("#area-list").append(defaultOption);
+
+				if (parent == 0) {
+					return;
+				}
+
+				$.ajax({
+					url: "/districts",
+					type: "GET",
+					data: "parent=" + parent,
+					dataType: "JSON",
+					success: function(json) {
+						if (json.state == 200) {
+							let list = json.data;
+							console.log("count=" + list.length);
+							for (let i = 0; i < list.length; i++) {
+								console.log(list[i].name);
+								let option = '<option value="' + list[i].code + '">' + list[i].name + '</option>';
+								$("#area-list").append(option);
+							}
+						}
+					}
+				});
+			}
+
+			//监听注册按钮是否被点击
+			$("#btn-add-new-address").click(function () {
+				//发送ajax()异步请求完成用户注册
+				$.ajax({
+					url:"/addresses/add_new_address",
+					type:"POST",
+					data:$("#form-add-new-address").serialize(), //获取表单
+					dataType:"JSON",
+					success:function (json) {
+						if(json.state == 200) {
+							alert("添加成功")
+						} else {
+							alert("添加失败")
+						}
+					},
+					error:function (xhr) {
+						alert("新增收货地址时产生未知错误！" + xhr.status)
+					}
+				})
+			})
+		</script>
+	</body>
 </html>

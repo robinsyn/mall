@@ -10,6 +10,10 @@ spring:
       enabled: true
       max-file-size: 10MB
 
+user:
+  address:
+    max-count: 20
+
 
 mybatis:
 #  config-location: classpath:mybatis/mybatis-config.xml

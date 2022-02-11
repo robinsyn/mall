@@ -1,7 +1,6 @@
 package com.example.mall.mapper;
 
 import com.example.mall.entity.Address;
-import com.example.mall.entity.District;
 
 import java.util.Date;
 import java.util.List;

@@ -26,4 +26,11 @@ public interface AddressService {
      * @param username 当前登录的用户名
      */
     void delete(Integer aid, Integer uid, String username);
+
+    /**
+     * 根据aid查询
+     * @param aid
+     * @return
+     */
+    Address getByAid(Integer aid, Integer uid);
 }

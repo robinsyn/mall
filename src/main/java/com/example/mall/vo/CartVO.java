@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-/** 购物车数据的Value Object类 */
+/** 购物车数据的Value*/
 @Data
 public class CartVO implements Serializable {
     private Integer cid;

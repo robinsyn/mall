@@ -37,7 +37,7 @@ public class UserController extends BaseController{
      */
     @RequestMapping("/reg")
 //    @ResponseBody //表示此方法的响应结果以Json格式进行数据传输
-    public JsonResult<Void> reg(User user) {
+    public JsonResult<Void> reg(User user, String secondpassword) {
         JsonResult<Void> result = new JsonResult<>();
         try {
             userService.reg(user);
@@ -63,13 +63,12 @@ public class UserController extends BaseController{
     public JsonResult<User> login(String username,
                                   String password,
                                   HttpSession session) {
-        User data = userService.login(username, password);
-        //向session对象中完成全局数据的绑定
-        session.setAttribute("uid", data.getUid());
-        session.setAttribute("username", data.getUsername());
         JsonResult<User> result = new JsonResult<>();
         try {
-            userService.login(username, password);
+            User data = userService.login(username, password);
+            //向session对象中完成全局数据的绑定
+            session.setAttribute("uid", data.getUid());
+            session.setAttribute("username", data.getUsername());
             result.setState(200);
             result.setData(data);
             result.setMessage("登陆成功");
@@ -77,7 +76,7 @@ public class UserController extends BaseController{
             result.setState(4000);
             result.setMessage("用户不存在");
         } catch (PasswordNotMatchException e) {
-            result.setState(4000);
+            result.setState(4001);
             result.setMessage("密码错误");
         }
         return result;

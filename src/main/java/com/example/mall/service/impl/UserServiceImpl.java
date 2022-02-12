@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService{
             throw new UsernameDuplicatedException("用户名被占用");
         }
 
+
         //密码加密处理：md5加密
         //盐值 + password + 盐值 ---> md5算法加密，连续加载三次
         String oldPassword = user.getPassword();
@@ -52,6 +53,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User login(String username, String password) {
+        User user = new User();
         User result = userMapper.findByName(username);
         if(result == null) {
             throw new UserNotFoundException("用户不存在");
@@ -63,7 +65,6 @@ public class UserServiceImpl implements UserService{
         if (!newMd5.equals(oldPassword)) {
             throw new PasswordNotMatchException("密码错误");
         }
-        User user = new User();
         user.setUid(result.getUid());
         user.setUsername(result.getUsername());
         user.setAvatar(result.getAvatar());

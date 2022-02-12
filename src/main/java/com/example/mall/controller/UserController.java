@@ -37,7 +37,7 @@ public class UserController extends BaseController{
      */
     @RequestMapping("/reg")
 //    @ResponseBody //表示此方法的响应结果以Json格式进行数据传输
-    public JsonResult<Void> reg(User user, String secondpassword) {
+    public JsonResult<Void> reg(User user) {
         JsonResult<Void> result = new JsonResult<>();
         try {
             userService.reg(user);
